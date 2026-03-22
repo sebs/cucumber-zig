@@ -135,28 +135,6 @@ zig build test     # run all 146 tests
 
 Requires Zig 0.13+.
 
-## Architecture
-
-```
-src/
-  cucumber.zig          Root module — public API re-exports
-  types.zig             Core types: StepArg, DataTable, Pickle, etc.
-  regex.zig             Minimal NFA regex engine (Pike VM)
-  expression.zig        Cucumber Expression compiler
-  tag_expression.zig    Boolean tag expression parser
-  step_registry.zig     Step definition storage and matching
-  hooks.zig             Hook registration and lifecycle
-  runner.zig            Generic Runner(WorldType) orchestrator
-  snippet.zig           Undefined step snippet generator
-  Formatter.zig         Type-erased formatter interface (vtable)
-  formatters/
-    pretty.zig          Colored terminal formatter
-    progress.zig        Compact CI formatter
-    junit.zig           JUnit XML formatter
-    json.zig            Legacy JSON formatter
-    messages.zig        Cucumber Messages NDJSON formatter
-```
-
 ## License
 
 MIT
