@@ -4,14 +4,14 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    // Library module
-    const cucumber_mod = b.addModule("cucumber-zig", .{
+    // ── Exported module (for downstream packages that depend on cucumber-zig) ──
+    _ = b.addModule("cucumber-zig", .{
         .root_source_file = b.path("src/cucumber.zig"),
         .target = target,
         .optimize = optimize,
     });
 
-    // Library artifact (for linking)
+    // ── Library artifact ──
     const lib = b.addStaticLibrary(.{
         .name = "cucumber-zig",
         .root_source_file = b.path("src/cucumber.zig"),
@@ -20,7 +20,7 @@ pub fn build(b: *std.Build) void {
     });
     b.installArtifact(lib);
 
-    // Unit tests
+    // ── Unit tests ──
     const tests = b.addTest(.{
         .root_source_file = b.path("src/cucumber.zig"),
         .target = target,
@@ -30,13 +30,27 @@ pub fn build(b: *std.Build) void {
     const test_step = b.step("test", "Run unit tests");
     test_step.dependOn(&run_tests.step);
 
-    _ = cucumber_mod;
-}
+    // ── Example: banking application ──
+    const cucumber_mod = b.addModule("cucumber", .{
+        .root_source_file = b.path("src/cucumber.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
 
-/// Build step that users add to their own build.zig to run cucumber features.
-pub const FeatureStepOptions = struct {
-    name: []const u8 = "cucumber",
-    step_files: []const []const u8,
-    feature_dir: []const u8,
-    tags: ?[]const u8 = null,
-};
+    const example = b.addExecutable(.{
+        .name = "banking-example",
+        .root_source_file = b.path("example/main.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+    example.root_module.addImport("cucumber", cucumber_mod);
+    b.installArtifact(example);
+
+    const run_example = b.addRunArtifact(example);
+    run_example.step.dependOn(b.getInstallStep());
+    if (b.args) |args| {
+        run_example.addArgs(args);
+    }
+    const run_step = b.step("run", "Run the banking example");
+    run_step.dependOn(&run_example.step);
+}

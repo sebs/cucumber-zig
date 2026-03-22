@@ -126,14 +126,13 @@ try runner.addFormatter(junit.formatter());
 | `Json` | Legacy Cucumber JSON format |
 | `Messages` | Cucumber Messages NDJSON |
 
-## Building
+## Example
+
+See [example/](example/) for a complete banking application demo with feature files, step definitions, and a World struct. Run it with:
 
 ```sh
-zig build          # build the library
-zig build test     # run all 146 tests
+zig build run
 ```
-
-Requires Zig 0.13+.
 
 ## License
 

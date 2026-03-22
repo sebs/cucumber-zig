@@ -2,7 +2,6 @@
     .name = .cucumber_zig,
     .fingerprint = 0xa85ac48674c36b2,
     .version = "0.1.0",
-    .minimum_zig_version = "0.13.0",
     .paths = .{
         "src",
         "build.zig",
