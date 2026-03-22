@@ -327,6 +327,9 @@ pub fn Runner(comptime WorldType: type) type {
             };
 
             const step_result = if (match_result) |matched| blk: {
+                // Free the match result args when done (they were allocated by the expression matcher).
+                defer matched.match_result.deinit();
+
                 // 6d. Convert PickleStepArgument to StepArg and append to matched args.
                 var args = std.ArrayList(types.StepArg).init(scenario_alloc);
                 args.appendSlice(matched.args) catch {
